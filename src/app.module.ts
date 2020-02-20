@@ -1,10 +1,30 @@
-import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
+import { GraphQLModule } from '@nestjs/graphql';
+import { UserModule } from './features/user/user.module';
+import { AuthMiddleware } from './auth/auth.middleware';
 
 @Module({
-  imports: [],
-  controllers: [AppController],
-  providers: [AppService],
+  imports: [
+    UserModule,
+    GraphQLModule.forRoot({
+      context: ({ req }) => ({ req }),
+      debug: false,
+      playground: true,
+      autoSchemaFile: 'schema.gql',
+    }),
+  ],
+  controllers: [],
+  providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AuthMiddleware)
+      .forRoutes({ path: '*', method: RequestMethod.ALL });
+  }
+}
