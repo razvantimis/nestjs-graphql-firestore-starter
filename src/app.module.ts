@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { GraphQLModule } from '@nestjs/graphql';
 import { UserModule } from './features/user/user.module';
-import { AuthMiddleware } from './auth/auth.middleware';
+import { AuthMiddleware } from './features/user/auth.middleware';
 
 @Module({
   imports: [

@@ -26,6 +26,7 @@
     "@nestjs/platform-express": "^6.10.14",
     "@nestjs/platform-fastify": "^6.11.7",
     "apollo-server-fastify": "^2.10.1",
+    "fireorm": "^0.12.1",
     "graphql": "^14.6.0",
     "graphql-tools": "^4.0.7",
     "reflect-metadata": "^0.1.13",

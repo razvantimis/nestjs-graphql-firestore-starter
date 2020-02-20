@@ -1,10 +1,12 @@
-import { Injectable, NestMiddleware, HttpStatus } from '@nestjs/common'
+import { Injectable, NestMiddleware, HttpStatus, createParamDecorator } from '@nestjs/common'
 import { HttpException } from '@nestjs/common/exceptions/http.exception'
-import { Request, Response } from 'express'
+import { Response } from 'express'
 import { getFirebaseApp } from 'src/utils/firebase'
+import { auth } from 'firebase-admin'
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
+
   async use(req: any, _: Response, next: Function) {
     const { authorization } = req.headers
     if(!authorization) {
@@ -24,3 +26,8 @@ export class AuthMiddleware implements NestMiddleware {
     next()
   }
 }
+
+export const DecodedIdToken = createParamDecorator(
+  (data, [root, args, ctx, info]) =>
+    ctx.req.decodedIdToken as auth.DecodedIdToken,
+);
