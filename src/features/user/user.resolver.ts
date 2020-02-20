@@ -11,8 +11,8 @@ export class UserResolver {
 
   @Query(() => UserType, { nullable: true })
   async UserInstance(@DecodedIdToken() decodedIdToken: auth.DecodedIdToken) {
-    const user = this.userService.findById(decodedIdToken.uid);
-    return;
+    const user = await this.userService.findById(decodedIdToken.uid);
+    return user;
   }
 
   @Mutation(() => UserType)

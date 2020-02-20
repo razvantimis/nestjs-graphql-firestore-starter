@@ -1,29 +1,36 @@
-import { Injectable, NestMiddleware, HttpStatus, createParamDecorator } from '@nestjs/common'
-import { HttpException } from '@nestjs/common/exceptions/http.exception'
-import { Response } from 'express'
-import { getFirebaseApp } from 'src/utils/firebase'
-import { auth } from 'firebase-admin'
+import {
+  Injectable,
+  NestMiddleware,
+  HttpStatus,
+  createParamDecorator,
+} from '@nestjs/common';
+import { HttpException } from '@nestjs/common/exceptions/http.exception';
+import { Response } from 'express';
+import { getFirebaseApp } from 'src/utils/firebase';
+import { auth } from 'firebase-admin';
 
 @Injectable()
 export class AuthMiddleware implements NestMiddleware {
-
   async use(req: any, _: Response, next: Function) {
-    const { authorization } = req.headers
-    if(!authorization) {
-        next();
-        return;
+    const { authorization } = req.headers;
+    if (!authorization) {
+      next();
+      return;
     }
-    const token = authorization.replace("Bearer ", "")
+    const token = authorization.replace('Bearer ', '');
 
-    const user = await getFirebaseApp()
+    const decodedIdToken = await getFirebaseApp()
       .auth()
       .verifyIdToken(token)
       .catch(err => {
-        throw new HttpException({ message: 'Input data validation failed', err }, HttpStatus.UNAUTHORIZED)
-      })
+        throw new HttpException(
+          { message: 'Input data validation failed', err },
+          HttpStatus.UNAUTHORIZED,
+        );
+      });
 
-    req.firebaseUser = user
-    next()
+    req.decodedIdToken = decodedIdToken;
+    next();
   }
 }
 
